@@ -21,7 +21,7 @@ export async function getListById(id: number) {
       id,
     },
     include: {
-      items: true,
+      items: { orderBy: { name: "asc" } },
     },
   });
 }

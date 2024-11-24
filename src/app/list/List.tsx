@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 import { Item } from "@prisma/client";
 import { ListWithItems } from "@/utils/lists";
+import { setItemPurchasedQuantity } from "@/utils/items";
 
 export default function List(props: { list: ListWithItems }) {
   const list = props.list;
@@ -17,14 +18,16 @@ export default function List(props: { list: ListWithItems }) {
 
   // eslint-disable-next-line
   function handlePurchaseClick(e: any, item: Item) {
-    console.log("purchased item");
     e.preventDefault();
 
+    const purchasedQuantity = item.purchasedQuantity + 1;
+
     const newItems = items.map((mapItem: Item) =>
-      mapItem.id === item.id
-        ? { ...mapItem, purchasedQuantity: mapItem.purchasedQuantity + 1 }
-        : mapItem,
+      mapItem.id === item.id ? { ...mapItem, purchasedQuantity } : mapItem,
     );
+
+    setItemPurchasedQuantity(item, purchasedQuantity);
+
     setItems(newItems);
   }
 
