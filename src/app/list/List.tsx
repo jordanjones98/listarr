@@ -14,6 +14,7 @@ export default function List(props: { list: List }) {
   const list = props.list;
   const [items, setItems] = React.useState(list.items);
 
+  // eslint-disable-next-line
   function handlePurchaseClick(e: any, item: Item) {
     console.log("purchased item");
     e.preventDefault();
