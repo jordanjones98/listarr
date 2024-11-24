@@ -8,9 +8,9 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import Link from "next/link";
-import { Item, List } from "@prisma/client";
+import { Item, List as ListModel } from "@prisma/client";
 
-export default function List(props: { list: List }) {
+export default function List(props: { list: ListModel }) {
   const list = props.list;
   const [items, setItems] = React.useState(list.items);
 
