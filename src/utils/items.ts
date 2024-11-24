@@ -1,5 +1,6 @@
 "use server";
 import prisma from "./db";
+import { Item } from "@prisma/client";
 
 export async function purchaseItem(item: Item) {
   const { purchasedQuantity, id } = item;

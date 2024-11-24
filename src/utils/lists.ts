@@ -1,6 +1,8 @@
 "use server";
 import prisma from "./db";
-import { Item } from "@prisma/client";
+import { Item, List } from "@prisma/client";
+
+export type ListWithItems = List & { items: Item[] };
 
 export async function getLists(
   options: { includeItems: boolean } = { includeItems: false },

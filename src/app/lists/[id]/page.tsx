@@ -12,7 +12,11 @@ export default async function Page({
   const list = await getListById(Number(id));
   return (
     <div className="container mx-auto p-6">
-      <List list={list} />
+      {list ? (
+        <List list={list} />
+      ) : (
+        <h1 className="text-5xl">List Not Found</h1>
+      )}
     </div>
   );
 }
