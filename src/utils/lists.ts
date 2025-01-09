@@ -21,7 +21,16 @@ export async function getListById(id: number) {
       id,
     },
     include: {
-      items: { orderBy: { name: "asc" } },
+      items: {
+        where: {
+          NOT: {
+            purchasedQuantity: {
+              equals: prisma.item.fields.wantedQuantity,
+            },
+          },
+        },
+        orderBy: { name: "asc" },
+      },
     },
   });
 }
