@@ -3,9 +3,21 @@ import { getLists } from "@/utils/lists";
 import { ListWithItems } from "@/utils/lists";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Link from "next/link";
+import { Item } from "@prisma/client";
 
 export default async function LaurenGrid() {
   const lists = await getLists({ includeItems: true });
+
+  function getListItemCount(items: Item[]) {
+    let itemCount = 0;
+
+    items.map((item) => {
+      if (item.purchasedQuantity !== item.wantedQuantity) {
+        itemCount++;
+      }
+    });
+    return itemCount;
+  }
 
   return (
     <div className="container mx-auto p-6">
@@ -23,7 +35,7 @@ export default async function LaurenGrid() {
               </CardHeader>
               <CardContent>
                 <p className="text-lg font-semibold text-gray-700">
-                  {list.items.length} Items
+                  {getListItemCount(list.items)} Items
                 </p>
               </CardContent>
             </Card>
