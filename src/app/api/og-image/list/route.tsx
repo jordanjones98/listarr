@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
           justifyContent: "center",
           backgroundColor: "#f5f7f5",
           backgroundImage:
-            "radial-gradient(ellipse at top, rgba(45, 134, 89, 0.15) 0%, transparent 50%), radial-gradient(ellipse at bottom right, rgba(196, 30, 58, 0.08) 0%, transparent 40%)",
+            "radial-gradient(ellipse at top, rgba(45, 134, 89, 0.1) 0%, transparent 30%), radial-gradient(ellipse at bottom right, rgba(196, 30, 58, 0.05) 0%, transparent 25%)",
         }}
       >
         <div
@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
             justifyContent: "center",
             backgroundColor: "white",
             borderRadius: "24px",
-            padding: "50px 80px",
+            padding: "60px 150px",
             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.1)",
             border: "2px solid rgba(45, 134, 89, 0.1)",
           }}
