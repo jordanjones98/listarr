@@ -34,6 +34,7 @@ export default function Admin({ initialLists }: AdminProps) {
     url: "",
     price: "",
     wantedQuantity: "1",
+    ogImage: "",
   });
 
   async function handleCreateList() {
@@ -74,9 +75,70 @@ export default function Admin({ initialLists }: AdminProps) {
   }
 
   function resetItemForm() {
-    setItemForm({ name: "", url: "", price: "", wantedQuantity: "1" });
+    setItemForm({ name: "", url: "", price: "", wantedQuantity: "1", ogImage: "" });
     setEditingItem(null);
     setShowItemForm(false);
+  }
+
+  async function fetchOgImageFromUrl(url: string): Promise<string | null> {
+    try {
+      // Use a CORS proxy to fetch the page client-side
+      const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+      const response = await fetch(proxyUrl);
+      if (!response.ok) return null;
+
+      const html = await response.text();
+
+      // Try various meta tag patterns
+      const patterns = [
+        /<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["']/i,
+        /<meta[^>]*content=["']([^"']+)["'][^>]*property=["']og:image["']/i,
+        /<meta[^>]*(?:name|property)=["']twitter:image["'][^>]*content=["']([^"']+)["']/i,
+        /<meta[^>]*content=["']([^"']+)["'][^>]*(?:name|property)=["']twitter:image["']/i,
+        /<meta[^>]*(?:name|property)=["']_fbImage["'][^>]*content=["']([^"']+)["']/i,
+        /<meta[^>]*content=["']([^"']+)["'][^>]*(?:name|property)=["']_fbImage["']/i,
+        /<meta[^>]*itemprop=["']image["'][^>]*content=["']([^"']+)["']/i,
+        /<link[^>]*rel=["']image_src["'][^>]*href=["']([^"']+)["']/i,
+      ];
+
+      for (const pattern of patterns) {
+        const match = html.match(pattern);
+        if (match) {
+          let imageUrl = match[1];
+          // Resolve relative URLs
+          if (imageUrl.startsWith("//")) {
+            imageUrl = "https:" + imageUrl;
+          } else if (!imageUrl.startsWith("http")) {
+            imageUrl = new URL(imageUrl, url).href;
+          }
+          return imageUrl;
+        }
+      }
+
+      // Try JSON-LD
+      const jsonLdMatch = html.match(
+        /<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/i
+      );
+      if (jsonLdMatch) {
+        try {
+          const data = JSON.parse(jsonLdMatch[1]);
+          if (data.image) {
+            if (typeof data.image === "string") return data.image;
+            if (Array.isArray(data.image) && data.image[0]) {
+              return typeof data.image[0] === "string" ? data.image[0] : data.image[0].url;
+            }
+            if (data.image.url) return data.image.url;
+          }
+        } catch {
+          // Invalid JSON
+        }
+      }
+
+      return null;
+    } catch (error) {
+      console.error("Failed to fetch OG image:", error);
+      return null;
+    }
   }
 
   async function handleSaveItem() {
@@ -85,6 +147,12 @@ export default function Admin({ initialLists }: AdminProps) {
 
     const price = parseFloat(itemForm.price);
     const wantedQuantity = parseInt(itemForm.wantedQuantity) || 1;
+    let ogImage = itemForm.ogImage.trim() || null;
+
+    // If no image URL provided, try to fetch it client-side
+    if (!ogImage && itemForm.url.trim()) {
+      ogImage = await fetchOgImageFromUrl(itemForm.url.trim());
+    }
 
     try {
       if (editingItem) {
@@ -93,6 +161,7 @@ export default function Admin({ initialLists }: AdminProps) {
           url: itemForm.url.trim(),
           price,
           wantedQuantity,
+          ogImage,
         });
       } else {
         await createItem({
@@ -101,6 +170,7 @@ export default function Admin({ initialLists }: AdminProps) {
           price,
           wantedQuantity,
           listId: selectedList.id,
+          ogImage,
         });
       }
       // Refresh the list
@@ -132,6 +202,7 @@ export default function Admin({ initialLists }: AdminProps) {
       url: item.url,
       price: item.price.toString(),
       wantedQuantity: item.wantedQuantity.toString(),
+      ogImage: item.ogImage || "",
     });
     setShowItemForm(true);
   }
@@ -185,7 +256,7 @@ export default function Admin({ initialLists }: AdminProps) {
                     key={list.id}
                     className={`flex items-center justify-between p-3 rounded-md cursor-pointer transition-colors ${
                       selectedList?.id === list.id
-                        ? "bg-purple-100 border border-purple-300"
+                        ? "bg-red-100 border border-red-300"
                         : "bg-gray-50 hover:bg-gray-100"
                     }`}
                     onClick={() => handleSelectList(list)}
@@ -283,6 +354,20 @@ export default function Admin({ initialLists }: AdminProps) {
                           }
                           className="w-full px-3 py-2 border rounded-md"
                           placeholder="1"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium mb-1">
+                          Image URL (optional - auto-fetched if empty)
+                        </label>
+                        <input
+                          type="url"
+                          value={itemForm.ogImage}
+                          onChange={(e) =>
+                            setItemForm({ ...itemForm, ogImage: e.target.value })
+                          }
+                          className="w-full px-3 py-2 border rounded-md"
+                          placeholder="https://... (leave empty to auto-fetch)"
                         />
                       </div>
                     </div>

@@ -24,6 +24,7 @@ export async function createItem(data: {
   price: number;
   wantedQuantity: number;
   listId: number;
+  ogImage?: string | null;
 }) {
   return prisma.item.create({
     data,
@@ -38,6 +39,7 @@ export async function updateItem(
     price?: number;
     wantedQuantity?: number;
     purchasedQuantity?: number;
+    ogImage?: string | null;
   },
 ) {
   return prisma.item.update({

@@ -14,12 +14,13 @@ model List {
 }
 
 model Item {
-  id                Int    @id @default(autoincrement())
+  id                Int     @id @default(autoincrement())
   name              String
   url               String
-  purchasedQuantity Int    @default(0)
-  wantedQuantity    Int    @default(1)
+  ogImage           String?
+  purchasedQuantity Int     @default(0)
+  wantedQuantity    Int     @default(1)
   price             Int
-  list              List   @relation(fields: [listId], references: [id])
+  list              List    @relation(fields: [listId], references: [id])
   listId            Int
 }

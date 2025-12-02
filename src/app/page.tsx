@@ -27,7 +27,7 @@ export default async function LaurenGrid() {
           <Link
             key={list.id}
             href={`lists/${list.id}`}
-            className="block transition-transform duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded-lg"
+            className="block transition-transform duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-lg"
           >
             <Card className="flex flex-col h-full hover:shadow-lg transition-shadow duration-200">
               <CardHeader>
