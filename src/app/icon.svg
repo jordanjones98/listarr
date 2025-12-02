@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Gift box base -->
+  <rect x="4" y="14" width="24" height="14" rx="2" fill="#c41e3a"/>
+  <!-- Gift box lid -->
+  <rect x="3" y="10" width="26" height="5" rx="1.5" fill="#d42a46"/>
+  <!-- Vertical ribbon -->
+  <rect x="14" y="10" width="4" height="18" fill="#2d8a4e"/>
+  <!-- Horizontal ribbon -->
+  <rect x="4" y="18" width="24" height="4" fill="#2d8a4e"/>
+  <!-- Bow center -->
+  <circle cx="16" cy="8" r="2.5" fill="#2d8a4e"/>
+  <!-- Bow left loop -->
+  <ellipse cx="11" cy="7" rx="4" ry="3" fill="#2d8a4e"/>
+  <ellipse cx="11" cy="7" rx="2" ry="1.5" fill="#c41e3a"/>
+  <!-- Bow right loop -->
+  <ellipse cx="21" cy="7" rx="4" ry="3" fill="#2d8a4e"/>
+  <ellipse cx="21" cy="7" rx="2" ry="1.5" fill="#c41e3a"/>
+  <!-- Ribbon tails -->
+  <path d="M14 8 L10 2 L12 2 L16 7 Z" fill="#2d8a4e"/>
+  <path d="M18 8 L22 2 L20 2 L16 7 Z" fill="#2d8a4e"/>
+</svg>
