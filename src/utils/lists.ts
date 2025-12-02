@@ -82,3 +82,10 @@ export async function getListByIdWithAllItems(id: number) {
     },
   });
 }
+
+export async function updateList(id: number, name: string) {
+  return prisma.list.update({
+    where: { id },
+    data: { name },
+  });
+}

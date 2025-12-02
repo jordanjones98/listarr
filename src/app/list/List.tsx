@@ -19,10 +19,11 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import Link from "next/link";
-import { ChevronLeft, Package, ExternalLink, Check } from "lucide-react";
+import { ChevronLeft, Package, ExternalLink, Check, Copy } from "lucide-react";
 import { Item } from "@prisma/client";
 import { ListWithItems } from "@/utils/lists";
 import { setItemPurchasedQuantity } from "@/utils/items";
+import { useToast } from "@/components/ui/toast";
 
 function ItemImage({ item }: { item: Item }) {
   const [ogImage, setOgImage] = React.useState<string | null>(item.ogImage);
@@ -77,6 +78,19 @@ export default function List(props: { list: ListWithItems }) {
   const list = props.list;
   const [items, setItems] = React.useState(list.items);
   const [confirmItem, setConfirmItem] = React.useState<Item | null>(null);
+  const { toast } = useToast();
+
+  async function copyItemLink(e: React.MouseEvent, item: Item) {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      await navigator.clipboard.writeText(item.url);
+      toast("Link copied to clipboard");
+    } catch (error) {
+      console.error("Failed to copy link:", error);
+      toast("Failed to copy link", "error");
+    }
+  }
 
   function handlePurchaseClick(e: React.MouseEvent, item: Item) {
     e.preventDefault();
@@ -166,6 +180,13 @@ export default function List(props: { list: ListWithItems }) {
                     Purchased
                   </div>
                 )}
+                <button
+                  onClick={(e) => copyItemLink(e, item)}
+                  className="absolute top-3 left-3 bg-white/90 hover:bg-white text-gray-700 p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  title="Copy link"
+                >
+                  <Copy className="w-4 h-4" />
+                </button>
               </div>
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg font-semibold line-clamp-2 group-hover:text-primary transition-colors">
