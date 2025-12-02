@@ -46,3 +46,39 @@ export async function addItemToList(item: Item) {
     },
   });
 }
+
+export async function createList(name: string) {
+  return prisma.list.create({
+    data: {
+      name,
+    },
+  });
+}
+
+export async function deleteList(id: number) {
+  // Delete all items in the list first
+  await prisma.item.deleteMany({
+    where: {
+      listId: id,
+    },
+  });
+  // Then delete the list
+  return prisma.list.delete({
+    where: {
+      id,
+    },
+  });
+}
+
+export async function getListByIdWithAllItems(id: number) {
+  return prisma.list.findFirst({
+    where: {
+      id,
+    },
+    include: {
+      items: {
+        orderBy: { name: "asc" },
+      },
+    },
+  });
+}
