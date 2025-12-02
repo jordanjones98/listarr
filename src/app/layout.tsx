@@ -14,8 +14,22 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+const getBaseUrl = () => {
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL;
+  }
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  return "http://localhost:3000";
+};
+
 export const metadata: Metadata = {
-  title: "Listarr",
+  metadataBase: new URL(getBaseUrl()),
+  title: {
+    default: "Listarr",
+    template: "%s | Listarr",
+  },
   description: "Listarr created by Jordan Jones",
 };
 
